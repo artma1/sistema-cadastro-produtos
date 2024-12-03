@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using sistema_vega.Models;
+
 namespace sistema_vega
 {
     public class Program
@@ -14,7 +17,21 @@ namespace sistema_vega
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
+
+           // builder.Services.AddDbContext<AppDbContext>(options =>
+            //     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+          builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+                new MySqlServerVersion(new Version(8, 0, 40))
+
+            ));
+
+
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
