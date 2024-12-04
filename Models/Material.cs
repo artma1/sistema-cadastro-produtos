@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace sistema_vega.Models
 {
@@ -28,5 +29,7 @@ namespace sistema_vega.Models
         public string CreatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; } = null;
         public string UpdatedBy { get; set; }
+        [JsonIgnore]
+        public Supplier Supplier { get; set; }
     }
 }

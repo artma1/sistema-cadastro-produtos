@@ -20,12 +20,14 @@ namespace sistema_vega.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Material>>> GetMaterials()
         {
+           // var appDbContext = _context.Materials.Include(c => c.Supp);
+            //return (await appDbContext.ToListAsync());
             return await _context.Materials.ToListAsync();
         }
 
         // GET api/<MaterialsController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Material>> GetMaterial(int id)
+        public async Task<ActionResult<Material>> Details(int id)
         {
             var material = await _context.Materials.FindAsync(id);
 
@@ -45,9 +47,10 @@ namespace sistema_vega.Controllers
             {
                 return BadRequest("Produto não pode ser nulo");
             }
+
             _context.Materials.Add(material);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetMaterial), new { id = material.Id }, material);
+            return CreatedAtAction(nameof(Details), new { id = material.Id }, material);
         }
 
         // PUT api/<MaterialsController>/5

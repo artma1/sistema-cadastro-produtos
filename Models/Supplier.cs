@@ -20,6 +20,6 @@ namespace sistema_vega.Models
         [Display(Name = "CEP")]
         public string CEP { get; set; } 
         public string QRCode { get; set; }
-        public ICollection<Material> Materials { get; set; }
+        public ICollection<Material>? Materials { get; set; }
     }
 }
