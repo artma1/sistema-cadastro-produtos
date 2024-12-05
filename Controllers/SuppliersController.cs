@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sistema_vega.Models;
 using sistema_vega.Services;
+using YourProject.Services;
 
 
 //ATENÇÃO
@@ -16,12 +17,15 @@ namespace sistema_vega.Controllers
     {
         private readonly AppDbContext _context;
         private readonly FilterService _filterService;
+        private readonly PrintService _printService;
         //private readonly IQrCodeFormatter _qrCodeFormatter;
 
-        public SuppliersController(AppDbContext context, FilterService filterService)
+        public SuppliersController(AppDbContext context, FilterService filterService
+            , PrintService printService)
         {
             _context = context;
             _filterService = filterService;
+            _printService = printService;
             //   _qrCodeFormatter = qrCodeFormatter;
         }
         // GET: api/<SuppliersController>
@@ -46,6 +50,15 @@ namespace sistema_vega.Controllers
             }
 
             return Ok(supplier);
+        }
+
+        [HttpGet("print")]
+        public async Task<IActionResult> GenerateMaterialsPdf()
+        {
+            var supplier = await _context.Suppliers.ToListAsync();
+            var pdfBytes = await _printService.GeneratePdf(supplier);
+
+            return File(pdfBytes, "application/pdf", "fornecedores.pdf");
         }
 
         [HttpGet("filter")]
