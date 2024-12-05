@@ -18,6 +18,7 @@ namespace sistema_vega
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<QRCodeService>();
+            builder.Services.AddScoped<FilterService>();
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),

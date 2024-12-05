@@ -13,11 +13,13 @@ namespace sistema_vega.Controllers
     {
         private readonly AppDbContext _context;
         private readonly QRCodeService _qRCodeService;
+        private readonly FilterService _filterService;
 
-        public MaterialsController(AppDbContext context, QRCodeService qRCodeService)
+        public MaterialsController(AppDbContext context, QRCodeService qRCodeService, FilterService filterService)
         {
             _context = context;
             _qRCodeService = qRCodeService;
+            _filterService = filterService;
         }
         // GET: api/<MaterialsController>
         [HttpGet]
@@ -61,6 +63,19 @@ namespace sistema_vega.Controllers
             
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Details), new { id = material.Id }, material);
+        }
+
+        [HttpGet("filter")]
+        public async Task<ActionResult<List<Material>>> GetFilteredMaterials([FromQuery] string nameFilter, [FromQuery] string dateFilter)
+        {
+            var filteredMaterials = await _filterService.FilterEntitiesAsync<Material>(nameFilter, dateFilter);
+
+            if (filteredMaterials == null || !filteredMaterials.Any())
+            {
+                return NotFound("Nenhum produto encontrado na pesquisa.");
+            }
+
+            return Ok(filteredMaterials);
         }
 
         [HttpGet("QRCode/{id}")]
