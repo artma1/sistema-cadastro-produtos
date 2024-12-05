@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sistema_vega.Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+//ATENÇÃO
+//TERMINAR DE TESTAR QRCODE GERADO E SUBIR
 
 namespace sistema_vega.Controllers
 {
@@ -12,10 +14,12 @@ namespace sistema_vega.Controllers
     public class SuppliersController : Controller
     {
         private readonly AppDbContext _context;
+        //private readonly IQrCodeFormatter _qrCodeFormatter;
 
         public SuppliersController(AppDbContext context)
         {
             _context = context;
+         //   _qrCodeFormatter = qrCodeFormatter;
         }
         // GET: api/<SuppliersController>
         [HttpGet]
@@ -49,6 +53,9 @@ namespace sistema_vega.Controllers
             {
                 return BadRequest("Fornecedor não pode ser nulo");
             }
+
+            supplier.QRCode = "%CNPJ% - %CEP%" + (supplier.CreatedAt.HasValue ? " / CAD.%DATACADASTRO%" : "");
+
             _context.Suppliers.Add(supplier);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetSupplier), new { id = supplier.Id }, supplier);

@@ -9,7 +9,7 @@ namespace sistema_vega.Models
         [Required(ErrorMessage = "Informe o nome do fornecedor")]
         [Display(Name="Nome")]
         public string Name { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
         [Required(ErrorMessage = "Informe o endereço do fornecedor")]
         [Display(Name = "Endereço")]
         public string Adress { get; set; }
