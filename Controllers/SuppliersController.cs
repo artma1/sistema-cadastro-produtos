@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sistema_vega.Models;
+using sistema_vega.Services;
 
 
 //ATENÇÃO
@@ -14,12 +15,14 @@ namespace sistema_vega.Controllers
     public class SuppliersController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly FilterService _filterService;
         //private readonly IQrCodeFormatter _qrCodeFormatter;
 
-        public SuppliersController(AppDbContext context)
+        public SuppliersController(AppDbContext context, FilterService filterService)
         {
             _context = context;
-         //   _qrCodeFormatter = qrCodeFormatter;
+            _filterService = filterService;
+            //   _qrCodeFormatter = qrCodeFormatter;
         }
         // GET: api/<SuppliersController>
         [HttpGet]
@@ -43,6 +46,19 @@ namespace sistema_vega.Controllers
             }
 
             return Ok(supplier);
+        }
+
+        [HttpGet("filter")]
+        public async Task<ActionResult<List<Supplier>>> GetFilteredMaterials([FromQuery] string nameFilter, [FromQuery] string dateFilter)
+        {
+            var filteredSuppliers = await _filterService.FilterEntitiesAsync<Supplier>(nameFilter, dateFilter);
+
+            if (filteredSuppliers == null || !filteredSuppliers.Any())
+            {
+                return NotFound("Nenhum fornecedor encontrado na pesquisa.");
+            }
+
+            return Ok(filteredSuppliers);
         }
 
         // POST api/<SuppliersController>

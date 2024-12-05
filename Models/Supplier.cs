@@ -2,7 +2,7 @@
 
 namespace sistema_vega.Models
 {
-    public class Supplier
+    public class Supplier : IFilter
     {
         [Key]
         public int Id { get; set; }
