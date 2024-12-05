@@ -9,7 +9,7 @@ namespace sistema_vega.Models
         [Required(ErrorMessage = "Informe o nome do fornecedor")]
         [Display(Name="Nome")]
         public string Name { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
         [Required(ErrorMessage = "Informe o endereço do fornecedor")]
         [Display(Name = "Endereço")]
         public string Adress { get; set; }
@@ -20,6 +20,6 @@ namespace sistema_vega.Models
         [Display(Name = "CEP")]
         public string CEP { get; set; } 
         public string QRCode { get; set; }
-        public ICollection<Material>? Materials { get; set; }
+        public ICollection<Material> Materials { get; set; }
     }
 }

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sistema_vega.Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+//ATENÇÃO
+//TERMINAR DE TESTAR QRCODE GERADO E SUBIR
 
 namespace sistema_vega.Controllers
 {
@@ -11,15 +14,18 @@ namespace sistema_vega.Controllers
     public class SuppliersController : Controller
     {
         private readonly AppDbContext _context;
+        //private readonly IQrCodeFormatter _qrCodeFormatter;
 
         public SuppliersController(AppDbContext context)
         {
             _context = context;
+         //   _qrCodeFormatter = qrCodeFormatter;
         }
         // GET: api/<SuppliersController>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Supplier>>> GetSuppliers()
         {
+            
             return await _context.Suppliers.ToListAsync();
         }
 
@@ -27,14 +33,16 @@ namespace sistema_vega.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Supplier>> GetSupplier(int id)
         {
-            var supplier = await _context.Suppliers.FindAsync(id);
+            var supplier = await _context.Suppliers
+              .Include(s => s.Materials)  // Eager loading da lista de materiais
+              .FirstOrDefaultAsync(s => s.Id == id);
 
             if (supplier == null)
             {
                 return NotFound("Fornecedor não encontrado");
             }
 
-            return supplier;
+            return Ok(supplier);
         }
 
         // POST api/<SuppliersController>
@@ -45,6 +53,9 @@ namespace sistema_vega.Controllers
             {
                 return BadRequest("Fornecedor não pode ser nulo");
             }
+
+            supplier.QRCode = "%CNPJ% - %CEP%" + (supplier.CreatedAt.HasValue ? " / CAD.%DATACADASTRO%" : "");
+
             _context.Suppliers.Add(supplier);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetSupplier), new { id = supplier.Id }, supplier);
@@ -82,5 +93,27 @@ namespace sistema_vega.Controllers
 
             return Ok("Fornecedor apagado com sucesso!");
         }
+        [HttpGet("Report/{id}")]
+        public async Task<IActionResult> Report(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var supplier = await _context.Suppliers.FindAsync(id);
+            
+            if (supplier == null)
+            {
+                return NotFound();
+            }
+
+            var materials = await _context.Materials
+                .Where(c => c.IdSupplier == id)
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
+            
+            return Ok(materials);
+       }
     }
 }

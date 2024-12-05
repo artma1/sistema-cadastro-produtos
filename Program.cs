@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using sistema_vega.Models;
+using sistema_vega.Services;
 
 namespace sistema_vega
 {
@@ -16,14 +17,9 @@ namespace sistema_vega
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<QRCodeService>();
 
-
-
-           // builder.Services.AddDbContext<AppDbContext>(options =>
-            //     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
-          builder.Services.AddDbContext<AppDbContext>(options =>
+            builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
                 new MySqlServerVersion(new Version(8, 0, 40))
 
@@ -39,7 +35,7 @@ namespace sistema_vega
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
