@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using sistema_vega.Models;
 using sistema_vega.Services;
+using YourProject.Services;
 
 namespace sistema_vega
 {
@@ -18,6 +19,8 @@ namespace sistema_vega
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<QRCodeService>();
+            builder.Services.AddScoped<FilterService>();
+            builder.Services.AddScoped<PrintService>();
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),

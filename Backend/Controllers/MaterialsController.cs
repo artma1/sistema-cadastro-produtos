@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using sistema_vega.Models;
 using sistema_vega.Services;
+using YourProject.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,11 +14,16 @@ namespace sistema_vega.Controllers
     {
         private readonly AppDbContext _context;
         private readonly QRCodeService _qRCodeService;
+        private readonly FilterService _filterService;
+        private readonly PrintService _printService;
 
-        public MaterialsController(AppDbContext context, QRCodeService qRCodeService)
+        public MaterialsController(AppDbContext context, QRCodeService qRCodeService
+            , FilterService filterService, PrintService printService)
         {
             _context = context;
             _qRCodeService = qRCodeService;
+            _filterService = filterService;
+            _printService = printService;
         }
         // GET: api/<MaterialsController>
         [HttpGet]
@@ -62,6 +68,29 @@ namespace sistema_vega.Controllers
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Details), new { id = material.Id }, material);
         }
+
+        [HttpGet("filter")]
+        public async Task<ActionResult<List<Material>>> GetFilteredMaterials([FromQuery] string nameFilter, [FromQuery] string dateFilter)
+        {
+            var filteredMaterials = await _filterService.FilterEntitiesAsync<Material>(nameFilter, dateFilter);
+
+            if (filteredMaterials == null || !filteredMaterials.Any())
+            {
+                return NotFound("Nenhum produto encontrado na pesquisa.");
+            }
+
+            return Ok(filteredMaterials);
+        }
+
+        [HttpGet("print")]
+        public async Task<IActionResult> GenerateMaterialsPdf()
+        {
+            var materials = await _context.Materials.ToListAsync();
+            var pdfBytes = await _printService.GeneratePdf(materials);
+
+            return File(pdfBytes, "application/pdf", "produtos.pdf");
+        }
+        
 
         [HttpGet("QRCode/{id}")]
         public async Task<ActionResult<Material>> QRCodeGen(int id)

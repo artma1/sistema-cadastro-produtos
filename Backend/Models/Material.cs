@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace sistema_vega.Models
 {
-    public class Material
+    public class Material : IFilter
     {
         [Key]
         public int Id { get; set; }
@@ -25,7 +25,7 @@ namespace sistema_vega.Models
         [Required(ErrorMessage = "Informe o tipo do material")]
         [Display(Name = "Tipo")]
         public string Specie { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public string CreatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; } = null;
         public string UpdatedBy { get; set; }
