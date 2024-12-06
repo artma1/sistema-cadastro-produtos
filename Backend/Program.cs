@@ -22,6 +22,16 @@ namespace sistema_vega
             builder.Services.AddScoped<FilterService>();
             builder.Services.AddScoped<PrintService>();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")  // O domínio da sua aplicação front-end
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
                 new MySqlServerVersion(new Version(8, 0, 40))
@@ -43,6 +53,7 @@ namespace sistema_vega
 
             app.UseAuthorization();
 
+            app.UseCors("AllowLocalhost");
 
             app.MapControllers();
 
