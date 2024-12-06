@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'; // Adicionando o Link
+import Materials from './pages/Materials';
+import Suppliers from './pages/Suppliers';
+import MaterialDetails from './pages/MaterialDetails';
+import MaterialEdit from './pages/MaterialEdit';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <h1>Welcome to the Application</h1>
+        
+        {/* Definindo as rotas */}
+        <Routes>
+          <Route path="/" element={<h2>Home Page</h2>} /> {/* Rota para a home page */}
+          <Route path="/materials" element={<Materials />} />
+          <Route path="/suppliers" element={<Suppliers />} />
+          <Route path="/materials/:id" element={<MaterialDetails />} /> 
+          <Route path="/materials/edit/:id" element={<MaterialEdit />} />
+        </Routes>
+
+        <nav>
+          <ul>
+            <li><Link to="/materials">Materials</Link></li> {/* Link para materials */}
+            <li><Link to="/suppliers">Suppliers</Link></li> {/* Link para suppliers */}
+          </ul>
+        </nav>
+      </div>
+    </Router>
   );
 }
 
