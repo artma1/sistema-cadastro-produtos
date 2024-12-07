@@ -19,7 +19,7 @@ namespace sistema_vega.Models
         [Required(ErrorMessage = "Informe o CEP do fornecedor (Apenas números)")]
         [Display(Name = "CEP")]
         public string CEP { get; set; } 
-        public string QRCode { get; set; }
+        public string QRCode { get; set; } 
         public ICollection<Material> Materials { get; set; }
     }
 }

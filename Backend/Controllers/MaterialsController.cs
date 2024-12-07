@@ -93,17 +93,11 @@ namespace sistema_vega.Controllers
         
 
         [HttpGet("QRCode/{id}")]
-        public async Task<ActionResult<Material>> QRCodeGen(int id)
+        public async Task<ActionResult<string>> QRCodeGen(int id)
         {
-            var material = await _context.Materials.FindAsync(id);
-
-            if (material == null)
-            {
-                return NotFound("Produto não encontrado");
-            }
-
+    
             var supplier = await _context.Suppliers
-                 .Where(s => s.Id == material.IdSupplier)
+                 .Where(s => s.Id == id)
                  .FirstOrDefaultAsync();
             
             string qrcode = _qRCodeService.QRCodeGen(supplier);

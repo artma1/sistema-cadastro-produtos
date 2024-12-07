@@ -32,7 +32,7 @@ const MaterialsCreate = () => {
   useEffect(() => {
     if (material.idSupplier) {
       axios
-        .get(`https://localhost:7120/api/materials/QRCode/${material.idSupplier}`)
+        .get(`https://localhost:7120/api/materials/QRCode/${material.idSupplier}`) // Corrigido para usar idSupplier
         .then((response) => setQrCode(response.data)) // O backend retorna o QR Code como string
         .catch(() => setQrCode('Erro ao carregar QR Code')); // Exibe mensagem de erro se falhar
     }
