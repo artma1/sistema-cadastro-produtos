@@ -103,6 +103,20 @@ namespace sistema_vega.Controllers
                 return BadRequest("Id do fornecedor incorreto");
             }
 
+            var existingSupplier = await _context.Suppliers.FindAsync(id);
+
+            
+            if (existingSupplier == null)
+            {
+                return NotFound("Fornecedor não encontrado");
+            }
+
+            existingSupplier.Name = supplier.Name;
+            existingSupplier.Adress = supplier.Adress;
+            existingSupplier.CNPJ = supplier.CNPJ;
+            existingSupplier.CEP = supplier.CEP;
+            existingSupplier.CreatedAt = supplier.CreatedAt ?? existingSupplier.CreatedAt;
+
             await _context.SaveChangesAsync();
             return Ok(supplier);
         }
