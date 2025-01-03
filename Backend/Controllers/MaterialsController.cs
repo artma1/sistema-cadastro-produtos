@@ -93,17 +93,11 @@ namespace sistema_vega.Controllers
         
 
         [HttpGet("QRCode/{id}")]
-        public async Task<ActionResult<Material>> QRCodeGen(int id)
+        public async Task<ActionResult<string>> QRCodeGen(int id)
         {
-            var material = await _context.Materials.FindAsync(id);
-
-            if (material == null)
-            {
-                return NotFound("Produto não encontrado");
-            }
-
+    
             var supplier = await _context.Suppliers
-                 .Where(s => s.Id == material.IdSupplier)
+                 .Where(s => s.Id == id)
                  .FirstOrDefaultAsync();
             
             string qrcode = _qRCodeService.QRCodeGen(supplier);
@@ -111,24 +105,43 @@ namespace sistema_vega.Controllers
             return Ok(qrcode);
         }
 
-        // PUT api/<MaterialsController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMaterial(int id, [FromBody] Material material)
         {
             if (material == null)
             {
-                return NotFound("Produto não encontrado");
+                return BadRequest("Material não pode ser nulo");
             }
+
             if (id != material.Id)
             {
-                return BadRequest("Id do produto incorreto");
+                return BadRequest("ID do produto incorreto");
             }
 
-            material.UpdatedAt = DateTime.UtcNow;
+            // Encontrar o material no banco de dados
+            var existingMaterial = await _context.Materials.FindAsync(id);
+            if (existingMaterial == null)
+            {
+                return NotFound("Material não encontrado");
+            }
 
+            // Atualiza as propriedades do material
+            existingMaterial.Name = material.Name;
+            existingMaterial.Description = material.Description;
+            existingMaterial.Code = material.Code;
+            existingMaterial.FiscalCode = material.FiscalCode;
+            existingMaterial.Specie = material.Specie;
+            existingMaterial.IdSupplier = material.IdSupplier;
+            existingMaterial.UpdatedAt = DateTime.UtcNow;
+            existingMaterial.UpdatedBy = material.UpdatedBy;  // Atualize conforme necessário
+
+            // Salva as alterações no banco de dados
             await _context.SaveChangesAsync();
-            return Ok(material);
+
+            // Retorna o material atualizado na resposta
+            return Ok(existingMaterial);
         }
+
 
         // DELETE api/<MaterialsController>/5
         [HttpDelete("{id}")]
